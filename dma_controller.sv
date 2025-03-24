@@ -60,9 +60,6 @@ module dma #(
   logic [2:0] error_code;
   
   
-  assign  
-  
-  //in progress
   
   
   
