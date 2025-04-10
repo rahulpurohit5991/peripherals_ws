@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
+// Engineer: Rahul Kumar Purohit 
 // 
 // Create Date: 03/05/2025 09:45:38 AM
 // Design Name: 
@@ -23,6 +23,7 @@
 //`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/prim_alert_sender"
 `include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/gpio_reg_top"// Path to file containing registers operations
 //`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/prim_filter_ctr"
+
 module gpio_ip#(parameter NumRegs=18,// Number of Register used
 parameter NumIOs=32,// No of GPIO pins
 parameter NumInpPeriodCounters=0,
@@ -358,7 +359,7 @@ always@(posedge clk_i or negedge rst_ni) begin
  else begin
    data_in_q <= data_in_d;end
 end
-
+// Here ~data_in_q stores the previous data and the new data_in_d is reponsible for event_rise
 assign event_rise=data_in_d & ~data_in_q;
 assign event_fall=~data_in_d & data_in_q;
 
@@ -369,6 +370,8 @@ assign event_intr_fall=event_fall & reg2hw_intr_ctrl_en_falling_q;
 assign event_intr_acthigh= data_in_d & reg2hw_intr_ctrl_en_lvlhigh_q;
 assign event_intr_actlow= ~data_in_d & reg2hw_intr_ctrl_en_lvllow_q;
 
+       // here the event_intr_combined is a signal given to port event_ intr_i
+       // which is the input to the interrupt module
 assign event_intr_combined=event_intr_rise|event_intr_fall|event_intr_acthigh|event_intr_actlow;
 
 
