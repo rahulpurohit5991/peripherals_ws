@@ -18,13 +18,13 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/gpio_reg.vh"
-`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/prim_intr_hw"
+`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/gpio_reg.vh"// Path to file registers definations
+`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/prim_intr_hw"// Path to file containing Interrupt Module
 //`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/prim_alert_sender"
-`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/gpio_reg_top"
+`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/gpio_reg_top"// Path to file containing registers operations
 //`include "/home/rahul/arails/ts40peripherals24a/ts40_p240/rahulp40a/prim_filter_ctr"
-module gpio_ip#(parameter NumRegs=18,
-parameter NumIOs=32,
+module gpio_ip#(parameter NumRegs=18,// Number of Register used
+parameter NumIOs=32,// No of GPIO pins
 parameter NumInpPeriodCounters=0,
 parameter NumAlerts=1,
 parameter [NumAlerts-1:0] AlertAsyncOn= {NumAlerts{1'b1}},
@@ -37,8 +37,12 @@ parameter GpioAsyncOn               = 1,
         input strap_en_i,
         input   [NumAlerts-1:0] alert_rx_i,
         input [NumIOs-1:0] cio_gpio_i,
+        
+        // Signals from Registers file to GPIO block( reg2hw..)
         input   [31:0] reg2hw_direct_out_q,
         input reg2hw_direct_out_qe,
+        
+        // Masking inputs for GPIO output 
         input [15:0] reg2hw_masked_out_lower_mask_q,
         input  reg2hw_masked_out_lower_mask_qe,
         input [15:0]reg2hw_masked_out_lower_data_q,
@@ -47,8 +51,12 @@ parameter GpioAsyncOn               = 1,
         input  reg2hw_masked_out_upper_mask_qe,
         input [15:0] reg2hw_masked_out_upper_data_q,
         input  reg2hw_masked_out_upper_data_qe,
+
+        
         input [31:0] reg2hw_direct_oe_q,
         input  reg2hw_direct_oe_qe,
+
+        // Masking inputs for GPIO output enables 
         input [15:0] reg2hw_masked_oe_lower_mask_q,
         input reg2hw_masked_oe_lower_mask_qe,
         input [15:0] reg2hw_masked_oe_lower_data_q,
@@ -58,8 +66,8 @@ parameter GpioAsyncOn               = 1,
         input [15:0] reg2hw_masked_oe_upper_data_q,
         input  reg2hw_masked_oe_upper_data_qe,
         input [31:0] data_in_d,
-        //
         
+        // Inputs to Interrupt Block from register file  
         input reg2hw_intr_enable_qe,
         input [NumIOs-1:0] reg2hw_intr_enable_q,
         input reg2hw_intr_test_qe,
@@ -70,11 +78,13 @@ parameter GpioAsyncOn               = 1,
         input [NumIOs-1:0] reg2hw_intr_ctrl_en_lvlhigh_q,
         input [NumIOs-1:0] reg2hw_intr_ctrl_en_lvllow_q,
 
+        // Output from Interrupt block to register file 
         output wire [NumIOs-1:0] hw2reg_intr_state_d,
         output wire hw2reg_intr_state_de,
         output wire [NumIOs-1:0] intr_gpio_o,
         
 
+       // Output from GPIO block to register file
         output wire [31:0] hw2reg_data_in_d,
         output wire hw2reg_data_in_de,
         output wire [31:0] hw2reg_direct_out_d,
@@ -83,12 +93,10 @@ parameter GpioAsyncOn               = 1,
         output wire [31:0] hw2reg_direct_oe_d,
         output wire [15:0] hw2reg_masked_oe_lower_data_d,
         output wire [15:0] hw2reg_masked_oe_upper_data_d,
-        
-        //
         output wire  [NumIOs-1:0] cio_gpio_o,
         output  [NumIOs-1:0] cio_gpio_en_o,
+        
         output  sampled_straps_o,
-      
         output  [NumAlerts-1:0] alert_tx_o);
         reg [31:0] cio_gpio_q;
         reg [31:0] cio_gpio_en_q;
@@ -339,10 +347,11 @@ prim_intr_hw # (.Width(NumIOs)) intr_hw(
 .intr_o(intr_gpio_o)
 );
 
-assign hw2reg_data_in_d= data_in_d;
+assign hw2reg_data_in_d= data_in_d;// Direct assign from gpio input to register data
 reg [Width-1:0] data_in_q;
 wire event_rise,event_fall;
 
+       // Procedural block storing the data_in_d to data_in_q
 always@(posedge clk_i or negedge rst_ni) begin
  if(!rst_ni) begin
    data_in_q <= 0;end
