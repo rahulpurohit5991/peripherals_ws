@@ -16,17 +16,17 @@ module prim_intr_hw #(
   // Register Interface
 
   // signals going from register to the intr block
-  input reg2hw_intr_enable_qe_i,
-  input [Width-1:0] reg2hw_intr_enable_q_i,
-  input reg2hw_intr_test_qe_i,
-  input [Width-1:0] reg2hw_intr_test_q_i,
-  input [Width-1:0] reg2hw_intr_state_q_i,
+  input reg2hw_intr_enable_qe_i,// Write enable for the interrupt enable register
+  input [Width-1:0] reg2hw_intr_enable_q_i,// Value of Interrupt enable register
+  input reg2hw_intr_test_qe_i,// Test write enable for the CPU test interrupt
+  input [Width-1:0] reg2hw_intr_test_q_i,// CPU test interrupt
+  input [Width-1:0] reg2hw_intr_state_q_i,// Current value of Interrupt state register
   
 
   // Signals going from the intr block to the register file
-  output hw2reg_intr_state_de_o,
-  output [Width-1:0] hw2reg_intr_state_d_o,
-  output[Width-1:0]  hw2reg_data_in_d,
+  output hw2reg_intr_state_de_o,// Write enable for interrupt state register
+  output [Width-1:0] hw2reg_intr_state_d_o,// New Interrupt state data
+  output[Width-1:0]  hw2reg_data_in_d,// Sampled Input data
 
   // Outgoing Interrupt
   output [Width-1:0] intr_o
