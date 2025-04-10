@@ -79,10 +79,10 @@ assign intr_o = intr_o_reg;
   always @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni)
       intr_o_reg <= {Width{1'b0}};
-    else if (FLOPOUTPUT)
+    else if (FLOPOUTPUT)//  output which interrupt is enabled and update which interrupt is triggered 
       intr_o_reg <= reg2hw_intr_enable_q_i & status;
     else
-      intr_o_reg <= reg2hw_intr_enable_q_i & reg2hw_intr_state_q_i;
+      intr_o_reg <= reg2hw_intr_enable_q_i & reg2hw_intr_state_q_i;// output which interrupt is enabled and update with external state register
   end
 
 endmodule
