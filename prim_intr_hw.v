@@ -4,8 +4,8 @@
 // Module for Interrupt to instantiate to the top module
 module prim_intr_hw #(
   parameter Width = 1,
-  parameter USE_EVENT_TYPE = 1,
-  parameter USE_STATUS_TYPE = 0,
+  parameter USE_EVENT_TYPE = 1,// Event based interrupt( 1 due to edge triggered and latched once and stored)
+  parameter USE_STATUS_TYPE = 0,// Level based interrupt( 0 due to the usage of edge triggered on a level based interrupt)
   parameter FLOPOUTPUT = 1
 )(
   // Event
@@ -14,7 +14,8 @@ module prim_intr_hw #(
   input [Width-1:0] event_intr_i,
 
   // Register Interface
-  
+
+  // signals going from register to the intr block
   input reg2hw_intr_enable_qe_i,
   input [Width-1:0] reg2hw_intr_enable_q_i,
   input reg2hw_intr_test_qe_i,
@@ -22,6 +23,7 @@ module prim_intr_hw #(
   input [Width-1:0] reg2hw_intr_state_q_i,
   
 
+  // Signals going from the intr block to the register file
   output hw2reg_intr_state_de_o,
   output [Width-1:0] hw2reg_intr_state_d_o,
   output[Width-1:0]  hw2reg_data_in_d,
@@ -65,7 +67,7 @@ assign intr_o = intr_o_reg;
         hw2reg_intr_state_de_o_reg <= 1'b1;
         hw2reg_intr_state_d_o_reg  <= test_q | event_intr_i;
         status <= test_q | event_intr_i;
-      end else begin
+      end else begin// if niether event nor status
         hw2reg_intr_state_de_o_reg <= 1'b0;
         hw2reg_intr_state_d_o_reg  <= {Width{1'b0}};
         status                     <= {Width{1'b0}};
