@@ -1,8 +1,7 @@
 // Module: BRG (Baud Rate Generator)
 // Description:
 // This module generates two clocks (clk_rx and clk_tx) from a higher-frequency input clock (clk_in).
-// clk_rx is generated using a programmable division factor `n`.
-// clk_tx is further derived from clk_rx using another counter.
+
 
 module BRG (clk_in, rst, clk_rx, clk_tx);
   parameter n = 50; // Clock division factor for clk_rx
